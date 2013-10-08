@@ -1,0 +1,1 @@
+copy ExtSRAM\Obj\output.hex ExtSRAM\output.hex

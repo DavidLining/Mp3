@@ -1,0 +1,21 @@
+文件说明：
+	project.eww ：Workspace Data 工作空间
+	project.ewd ：Debugger Data. 调试器数据
+	project.ewp : IAR Project 项目文件
+		上面3个文件IAR系统的工程配置文件
+
+	stm32f10x_flash.icf : 	这个文件是IAR连接器配置文件。配置程序段（只读）在CPU内部Flash
+	 					数据段（可读写的，堆和栈）在CPU内部RAM。你可以根据自己需要进行修改。
+
+	stm32f10x_ram.icf   : 这个文件是IAR连接器配置文件。配置程序段（只读）和数据段（可读写的，堆和栈）
+				都在CPU内部RAM。你可以根据自己需要进行修改。
+
+	cpu_ram.mac : 在CPU内部RAM调试时的宏文件, 包含修改中断向量表的代码
+	ext_sram    : 在CPU内部RAM调试时的宏文件, 包含配置FSMC总线和修改中断向量表的代码
+
+使用方法：
+	(1) 双击 Project.eww，启动IAR开发环境
+	(2) 重新编译连接所有文件： Project->Rebuild all
+	(3) 装载镜像 : Project->Debug
+	(4) 运行程序 ：Debug->Go(F5)
+

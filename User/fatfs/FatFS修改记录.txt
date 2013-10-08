@@ -1,0 +1,62 @@
+SDIO+FAT
+
+1、在ff.h中添加 DWORD get_fattime(void);声明
+2、在ff.c中添加get_fattime函数的定义，如果没有需要直接返回0
+3、在diskio.c中包含对SD卡初始化和读写的程序(sdcard.h)
+4、在diskio.c中预定义一个常量：#define SECTOR_SIZE	512
+5、修改diskio.c中的disk_initialize函数，内容如下：
+	SD_CardInfo SDCardInfo;
+	SD_Error Status = SD_OK;
+		
+	Status = SD_Init();
+
+  	//Read CSD/CID MSD registers
+	if (Status == SD_OK) {
+    		Status = SD_GetCardInfo(&SDCardInfo);
+  	}
+
+  	//Select Card
+	if (Status == SD_OK) {
+   		Status = SD_SelectDeselect((u32) (SDCardInfo.RCA << 16));
+	}
+
+	//Set Device Transfer Mode to INTERRUPT 
+  	if (Status == SD_OK) {  
+		Status = SD_SetDeviceMode(SD_INTERRUPT_MODE);
+   	}
+	
+	if (Status == SD_OK) {
+		return RES_OK;
+	} else {
+		return RES_ERROR;
+	}
+6、修改diskio.c中的disk_status，直接返回0
+7、修改diskio.c中的disk_read，函数内容如下：
+	SD_Error Status = SD_OK;
+	
+	if (count == 1) {
+		Status = SD_ReadBlock(sector << 9 ,(u32 *)(&buff[0]),SECTOR_SIZE);
+	} else {
+		Status = SD_ReadMultiBlocks(sector << 9 ,(u32 *)(&buff[0]),SECTOR_SIZE,count);	
+	}
+
+	if (Status == SD_OK) {
+		return RES_OK;
+	} else {
+		return RES_ERROR;
+	}
+8、修改diskio.c中的disk_write，函数内容如下：
+	SD_Error Status = SD_OK;
+	
+	if (count == 1) {
+		Status = SD_WriteBlock(sector << 9 ,(u32 *)(&buff[0]),SECTOR_SIZE);
+	} else {
+		Status = SD_WriteMultiBlocks(sector << 9 ,(u32 *)(&buff[0]),SECTOR_SIZE,count);	
+	}
+
+	if (Status == SD_OK) {
+		return RES_OK;
+	} else {
+		return RES_ERROR;
+	}
+9、修改diskio.c中的disk_ioctl，直接返回0

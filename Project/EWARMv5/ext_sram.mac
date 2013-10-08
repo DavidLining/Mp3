@@ -1,0 +1,66 @@
+/****************************************************************************
+	Copyright (C), 2010 安富莱电子 www.armfly.com
+
+   【本例程在安富莱STM32F103ZE-EK开发板上调试通过             】
+   【QQ: 1295744630, 旺旺：armfly, Email: armfly@qq.com       】
+
+	文件名： ext_sram.mac
+
+	这是外部SRAM调试宏文件。
+
+	脚本的语法：IAR的Help中搜索关键字"__writeMemory32"
+
+	这些函数都是预定义函数，不得修改名称
+*/
+
+/* 配置FSMC总线，用于外部SRAM。这个函数在Load程序前执行 */
+execUserPreload()
+{
+  /* InitRCCC */
+  __writeMemory32(0x00005083, 0x40021000,"Memory");
+  __writeMemory32(0x00000000, 0x40021004,"Memory");
+  __writeMemory32(0x00000000, 0x40021004,"Memory");
+  __writeMemory32(0x00005083, 0x40021000,"Memory");
+  __writeMemory32(0x00000000, 0x40021004,"Memory");
+  __writeMemory32(0x009F0000, 0x40021008,"Memory");
+
+  __writeMemory32(0x00015083, 0x40021000,"Memory");
+  __sleep(100);            /* Wait for PLL lock */
+
+  __writeMemory32(0x00000030, 0x40022000,"Memory");
+  __writeMemory32(0x00000030, 0x40022000,"Memory");
+  __writeMemory32(0x00000032, 0x40022000,"Memory");
+  __writeMemory32(0x00000000, 0x40021004,"Memory");
+  __writeMemory32(0x00000000, 0x40021004,"Memory");
+  __writeMemory32(0x00000400, 0x40021004,"Memory");
+  __writeMemory32(0x00000400, 0x40021004,"Memory");
+  __writeMemory32(0x001D0400, 0x40021004,"Memory");
+  __writeMemory32(0x01035083, 0x40021000,"Memory");
+  __sleep(100);
+  __writeMemory32(0x001D0400, 0x40021004,"Memory");
+  __writeMemory32(0x001D0402, 0x40021004,"Memory");
+  __sleep(100);
+
+  __writeMemory32(0x00000114, 0x40021014,"Memory");  /* Enable AHBPeriphClock */
+  __writeMemory32(0x000001E0, 0x40021018,"Memory");  /* Enable APB2PeriphClock */
+
+  /* GPIO Configuration for FSMC */
+  __writeMemory32(0xB8BB44BB, 0x40011400,"Memory");
+  __writeMemory32(0xBBBBBBBB, 0x40011404,"Memory");
+  __writeMemory32(0xBBBBB4BB, 0x40011800,"Memory");   /* NBL0, NBL1 & adress configuration */
+  __writeMemory32(0xBBBBBBBB, 0x40011804,"Memory");
+  __writeMemory32(0x33BBBBBB, 0x40011C00,"Memory");
+  __writeMemory32(0xBBBB3333, 0x40011C04,"Memory");
+  __writeMemory32(0x48BBBBBB, 0x40012000,"Memory");
+  __writeMemory32(0x444B4BB4, 0x40012004,"Memory");   /* NE3 configuration */
+
+  __writeMemory32(0x00001010, 0xA0000010,"Memory");   /* FSMC Configuration */
+  __writeMemory32(0x00000200, 0xA0000014,"Memory");   /* FSMC_DataSetupTime = 2; */
+  __writeMemory32(0x00001011, 0xA0000010,"Memory");   /* Enable FSMC Bank1_SRAM Bank */
+}
+
+/* 复制中断向量表，这个函数再Load完成后执行 */
+execUserSetup()
+{
+	__writeMemory32(0x20000000, 0xE000ED08, "Memory");
+}

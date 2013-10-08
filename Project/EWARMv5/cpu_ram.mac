@@ -1,0 +1,21 @@
+/****************************************************************************
+	Copyright (C), 2010 安富莱电子 www.armfly.com
+
+   【本例程在安富莱STM32F103ZE-EK开发板上调试通过             】
+   【QQ: 1295744630, 旺旺：armfly, Email: armfly@qq.com       】
+
+	文件名： cpu_ram.mac
+
+	这是外部SRAM调试宏文件。
+
+	脚本的语法：IAR的Help中搜索关键字"__writeMemory32"
+
+	这些函数都是预定义函数，不得修改名称
+*/
+
+/* 复制中断向量表，这个函数再Load完成后执行 */
+execUserSetup()
+{
+   __writeMemory32(0x20000000, 0xE000ED08, "Memory");
+}
+
