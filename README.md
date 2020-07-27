@@ -1,4 +1,4 @@
-Mp3
+MP3Player
 ===
 
-A  mp3 design based on Stm32
+MP3Player developed with STM32
